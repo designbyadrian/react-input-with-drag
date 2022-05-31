@@ -19,8 +19,8 @@ export type InputWithDragChangeHandler = (
 
 interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
-  mouseDragThreshold?: number;
-  tabletDragThreshold?: number;
+  // mouseDragThreshold?: number;
+  // tabletDragThreshold?: number;
   modifiers?: InputDragModifiers;
   onChange?: InputWithDragChangeHandler;
 }
@@ -32,8 +32,8 @@ interface InputProps
  * @prop {number} tabletDragThreshold - The drag threshold for tablet events.
  */
 export default function InputDrag({
-  mouseDragThreshold = 3,
-  tabletDragThreshold = 10,
+  // mouseDragThreshold = 3,
+  // tabletDragThreshold = 10,
   value: _value,
   style: _style = {},
   modifiers: _modifiers = {},
