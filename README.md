@@ -10,12 +10,13 @@ npm install --save-dev react-input-with-drag
 
 ## Usage
 
-```javascript
+```typescript
 import InputWithDrag from 'react-input-with-drag';
+import type { InputWithDragChangeHandler } from "react-input-with-drag";
 
 function App() {
 
-  const handleChange = (value) => {
+  const handleChange: InputWithDragChangeHandler = (value) => {
     // do something with `value`
   }
 
