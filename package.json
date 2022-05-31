@@ -1,0 +1,48 @@
+{
+  "name": "react-input-with-drag",
+  "version": "1.0.0",
+  "description": "Lightweight, zero-dependency, number input component with mouse drag actions just like in Blender and 3D Studio Max.",
+  "keywords": [
+    "react",
+    "input",
+    "draggable",
+    "blender"
+  ],
+  "author": "Adrian von Gegerfelt <adrian@designbyadrian.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && node build.js && tsc --emitDeclarationOnly --outDir dist",
+    "clean": "rimraf dist",
+    "dev": "node serve.js",
+    "prepublishOnly": "npm run build"
+  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://github.com/designbyadrian/react-input-with-drag#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/designbyadrian/react-input-with-drag.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "peerDependencies": {
+    "react": ">=16",
+    "react-dom": ">=16"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
+    "esbuild": "^0.14.42",
+    "live-server": "^1.2.2",
+    "npm": "^8.11.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.2"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules
+public
+src
+
+.prettierrc
+build.js
+serve.js
+
+.DS_Store
