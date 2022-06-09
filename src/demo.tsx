@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import Input from './index';
 
 function App() {
-  const handleChange = (...args) => {
-    console.log('handleChange', ...args);
+  const handleChange = (value: number) => {
+    console.log('handleChange', value);
   };
 
   return (
