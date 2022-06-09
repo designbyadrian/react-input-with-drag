@@ -6,6 +6,8 @@ import React, {
   useState,
 } from 'react';
 
+import { debounce } from './utils';
+
 type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
 
 export type InputDragModifiers = {
@@ -61,6 +63,10 @@ export default function InputDrag({
     onChange?.(newValue, inputRef.current);
   };
 
+  const handleMoveChange = debounce((newValue: number) => {
+    onChange?.(newValue, inputRef.current);
+  }, 100);
+
   const handleMove = useCallback(
     (e: MouseEvent) => {
       setStartPos(pos => {
@@ -85,6 +91,7 @@ export default function InputDrag({
         if (props.max) newValue = Math.min(newValue, +props.max);
 
         setValue(newValue);
+        handleMoveChange(newValue);
 
         return pos;
       });

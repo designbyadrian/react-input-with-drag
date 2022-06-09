@@ -22561,17 +22561,31 @@
 
   // src/index.tsx
   var import_react = __toESM(require_react());
+
+  // src/utils.ts
+  function debounce(func, wait) {
+    let timeoutID;
+    if (!Number.isInteger(wait)) {
+      console.warn("Called debounce without a valid number");
+      wait = 300;
+    }
+    return function(...args) {
+      clearTimeout(timeoutID);
+      const context = this;
+      timeoutID = window.setTimeout(function() {
+        func.apply(context, args);
+      }, wait);
+    };
+  }
+
+  // src/index.tsx
   function InputDrag(_a) {
     var _b = _a, {
-      mouseDragThreshold = 3,
-      tabletDragThreshold = 10,
       value: _value,
       style: _style = {},
       modifiers: _modifiers = {},
       onChange
     } = _b, props = __objRest(_b, [
-      "mouseDragThreshold",
-      "tabletDragThreshold",
       "value",
       "style",
       "modifiers",
@@ -22592,6 +22606,9 @@
       setValue(newValue);
       onChange == null ? void 0 : onChange(newValue, inputRef.current);
     };
+    const handleMoveChange = debounce((newValue) => {
+      onChange == null ? void 0 : onChange(newValue, inputRef.current);
+    }, 100);
     const handleMove = (0, import_react.useCallback)((e) => {
       setStartPos((pos) => {
         const { clientX: x2, clientY: y2 } = e;
@@ -22611,10 +22628,11 @@
         if (props.max)
           newValue = Math.min(newValue, +props.max);
         setValue(newValue);
+        handleMoveChange(newValue);
         return pos;
       });
     }, [modifier, props.max, props.min, step]);
-    const handleMoveEnd = (0, import_react.useCallback)((e) => {
+    const handleMoveEnd = (0, import_react.useCallback)(() => {
       document.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseup", handleMoveEnd);
     }, [handleMove]);
@@ -22666,6 +22684,9 @@
 
   // src/demo.tsx
   function App() {
+    const handleChange = (...args) => {
+      console.log("handleChange", ...args);
+    };
     return /* @__PURE__ */ import_react2.default.createElement("div", {
       style: { fontFamily: "sans-serif" }
     }, /* @__PURE__ */ import_react2.default.createElement("h1", {
@@ -22683,7 +22704,8 @@
         borderRadius: "1em"
       }
     }, /* @__PURE__ */ import_react2.default.createElement(InputDrag, {
-      value: 77
+      value: 77,
+      onChange: handleChange
     })), /* @__PURE__ */ import_react2.default.createElement("p", {
       style: { fontSize: "0.8rem", textAlign: "center", color: "#555" }
     }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1")));
