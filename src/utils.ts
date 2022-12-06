@@ -27,3 +27,14 @@ export function debounce<F extends Function>(func: F, wait: number): F {
     }, wait);
   };
 }
+
+export function countDecimals(value: number) {
+  if (Math.floor(value) === value) return 0;
+
+  const valueAsString = value.toString();
+  return (
+    valueAsString.split('.')[1].length ||
+    valueAsString.split(',')[1].length ||
+    0
+  );
+}

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { debounce } from './utils';
+import { countDecimals, debounce } from './utils';
 
 type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
 
@@ -20,11 +20,15 @@ export type InputWithDragChangeHandler = (
 ) => void;
 
 interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'onInput'
+  > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
   modifiers?: InputDragModifiers;
   onChange?: InputWithDragChangeHandler;
+  onInput?: InputWithDragChangeHandler;
 }
 
 /**
@@ -40,9 +44,10 @@ export default function InputDrag({
   style: _style = {},
   modifiers: _modifiers = {},
   onChange,
+  onInput,
   ...props
 }: InputProps) {
-  const [value, setValue] = useState<number | ''>('');
+  const [value, setValue] = useState<number | string>('');
   const [modifier, setModifier] = useState<InputModifier | ''>('');
   const startValue = useRef(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -57,15 +62,25 @@ export default function InputDrag({
   const style: CSSProperties = { cursor: 'ew-resize', ...{ _style } };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = +e.target.value;
+    const newValue = e.target.value;
 
     setValue(newValue);
-    onChange?.(newValue, inputRef.current);
+
+    if (isNaN(+newValue)) {
+      return;
+    }
+
+    onChange?.(+newValue, inputRef.current);
   };
 
-  const handleMoveChange = debounce((newValue: number) => {
+  const handleDragEnd = debounce((newValue: number) => {
     onChange?.(newValue, inputRef.current);
-  }, 100);
+  }, 200);
+
+  const handleInput = (newValue: number) => {
+    onInput?.(newValue, inputRef.current);
+    handleDragEnd(newValue);
+  };
 
   const handleMove = useCallback(
     (e: MouseEvent) => {
@@ -82,7 +97,10 @@ export default function InputDrag({
           mod = modifiers[modifier] || 1;
         }
 
-        let delta = Math.sqrt(a * a + b * b) * step * mod;
+        const stepModifer = step * mod;
+        const decimals = countDecimals(stepModifer);
+
+        let delta = Math.sqrt(a * a + b * b) * stepModifer;
         if (x2 < x1) delta = -delta;
 
         let newValue = startValue.current + delta;
@@ -90,8 +108,10 @@ export default function InputDrag({
         if (props.min) newValue = Math.max(newValue, +props.min);
         if (props.max) newValue = Math.min(newValue, +props.max);
 
+        newValue = +newValue.toFixed(decimals);
+
         setValue(newValue);
-        handleMoveChange(newValue);
+        handleInput(newValue);
 
         return pos;
       });
@@ -106,7 +126,14 @@ export default function InputDrag({
 
   const handleDown = useCallback(
     (e: React.MouseEvent<HTMLInputElement>) => {
-      startValue.current = +value;
+      let _startValue = +value;
+
+      if (isNaN(_startValue)) {
+        _startValue = +(props.defaultValue || props.min || 0);
+      }
+
+      startValue.current = _startValue;
+
       setStartPos([e.clientX, e.clientY]);
 
       document.addEventListener('mousemove', handleMove);

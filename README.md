@@ -12,31 +12,33 @@ npm install --save-dev react-input-with-drag
 
 ```typescript
 import InputWithDrag from 'react-input-with-drag';
-import type { InputWithDragChangeHandler } from "react-input-with-drag";
+import type { InputWithDragChangeHandler } from 'react-input-with-drag';
 
 function App() {
+  const handleChange: InputWithDragChangeHandler = value => {
+    // fired on input change and drag end
+  };
 
-  const handleChange: InputWithDragChangeHandler = (value) => {
-    // do something with `value`
-  }
+  const handleInput: InputWithDragChangeHandler = value => {
+    // fired on every input change, including every pixel dragged
+  };
 
   return (
-    <InputWithDrag value={100} onChange={handleChange} />
+    <InputWithDrag value={100} onChange={handleChange} onInput={handleInput} />
   );
 }
-
 ```
 
 ## Properties
 
-Since react-input-with-drag overloads a regular HTML input, all the typical properties are accepted, like `onChange`, `min` and `max`. Being a React component, you can override the styles with either `style` or `className` as well.
+Since react-input-with-drag overloads a regular HTML input, all the typical properties are accepted, like `onChange`, `onInput`, `step`, `min`, and `max`. Being a React component, you can override the styles with either `style` or `className` as well.
 
 Additionally, these are props to customise react-input-with-drag:
 
-| prop | default | description
-| :- | :- | :-
-| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed
+| prop      | default             | description                                                 |
+| :-------- | :------------------ | :---------------------------------------------------------- | --- |
+| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed |     |
 
 > **Note**
-> 
+>
 > A modifier takes the [step](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/step) property into account. If `step` is 0.1, the default shift key will add/subtract by 0.01

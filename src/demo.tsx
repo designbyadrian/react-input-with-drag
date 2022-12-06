@@ -7,9 +7,13 @@ function App() {
     console.log('handleChange', value);
   };
 
+  const handleInput = (value: number) => {
+    console.log('handleInput', value);
+  };
+
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
-      <h1 style={{ textAlign: 'center' }}>💄 Input with drag</h1>
+      <h1 style={{ textAlign: 'center' }}>🦹 Input with drag</h1>
       <div
         style={{
           display: 'flex',
@@ -24,7 +28,7 @@ function App() {
             borderRadius: '1em',
           }}
         >
-          <Input value={77} onChange={handleChange} />
+          <Input value={77} onChange={handleChange} onInput={handleInput} />
         </div>
         <p style={{ fontSize: '0.8rem', textAlign: 'center', color: '#555' }}>
           Hold <em>Shift</em> for increments of 0.1

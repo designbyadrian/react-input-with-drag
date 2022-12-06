@@ -22577,6 +22577,12 @@
       }, wait);
     };
   }
+  function countDecimals(value) {
+    if (Math.floor(value) === value)
+      return 0;
+    const valueAsString = value.toString();
+    return valueAsString.split(".")[1].length || valueAsString.split(",")[1].length || 0;
+  }
 
   // src/index.tsx
   function InputDrag(_a) {
@@ -22584,12 +22590,14 @@
       value: _value,
       style: _style = {},
       modifiers: _modifiers = {},
-      onChange
+      onChange,
+      onInput
     } = _b, props = __objRest(_b, [
       "value",
       "style",
       "modifiers",
-      "onChange"
+      "onChange",
+      "onInput"
     ]);
     const [value, setValue] = (0, import_react.useState)("");
     const [modifier, setModifier] = (0, import_react.useState)("");
@@ -22602,13 +22610,20 @@
     const [, setStartPos] = (0, import_react.useState)([0, 0]);
     const style = __spreadValues({ cursor: "ew-resize" }, { _style });
     const handleChange = (e) => {
-      const newValue = +e.target.value;
+      const newValue = e.target.value;
       setValue(newValue);
-      onChange == null ? void 0 : onChange(newValue, inputRef.current);
+      if (isNaN(+newValue)) {
+        return;
+      }
+      onChange == null ? void 0 : onChange(+newValue, inputRef.current);
     };
-    const handleMoveChange = debounce((newValue) => {
+    const handleDragEnd = debounce((newValue) => {
       onChange == null ? void 0 : onChange(newValue, inputRef.current);
-    }, 100);
+    }, 200);
+    const handleInput = (newValue) => {
+      onInput == null ? void 0 : onInput(newValue, inputRef.current);
+      handleDragEnd(newValue);
+    };
     const handleMove = (0, import_react.useCallback)((e) => {
       setStartPos((pos) => {
         const { clientX: x2, clientY: y2 } = e;
@@ -22619,7 +22634,9 @@
         if (modifier) {
           mod = modifiers[modifier] || 1;
         }
-        let delta = Math.sqrt(a * a + b * b) * step * mod;
+        const stepModifer = step * mod;
+        const decimals = countDecimals(stepModifer);
+        let delta = Math.sqrt(a * a + b * b) * stepModifer;
         if (x2 < x1)
           delta = -delta;
         let newValue = startValue.current + delta;
@@ -22627,8 +22644,9 @@
           newValue = Math.max(newValue, +props.min);
         if (props.max)
           newValue = Math.min(newValue, +props.max);
+        newValue = +newValue.toFixed(decimals);
         setValue(newValue);
-        handleMoveChange(newValue);
+        handleInput(newValue);
         return pos;
       });
     }, [modifier, props.max, props.min, step]);
@@ -22637,7 +22655,11 @@
       document.removeEventListener("mouseup", handleMoveEnd);
     }, [handleMove]);
     const handleDown = (0, import_react.useCallback)((e) => {
-      startValue.current = +value;
+      let _startValue = +value;
+      if (isNaN(_startValue)) {
+        _startValue = +(props.defaultValue || props.min || 0);
+      }
+      startValue.current = _startValue;
       setStartPos([e.clientX, e.clientY]);
       document.addEventListener("mousemove", handleMove);
       document.addEventListener("mouseup", handleMoveEnd);
@@ -22684,14 +22706,17 @@
 
   // src/demo.tsx
   function App() {
-    const handleChange = (...args) => {
-      console.log("handleChange", ...args);
+    const handleChange = (value) => {
+      console.log("handleChange", value);
+    };
+    const handleInput = (value) => {
+      console.log("handleInput", value);
     };
     return /* @__PURE__ */ import_react2.default.createElement("div", {
       style: { fontFamily: "sans-serif" }
     }, /* @__PURE__ */ import_react2.default.createElement("h1", {
       style: { textAlign: "center" }
-    }, "\u{1F484} Input with drag"), /* @__PURE__ */ import_react2.default.createElement("div", {
+    }, "\u{1F9B9} Input with drag"), /* @__PURE__ */ import_react2.default.createElement("div", {
       style: {
         display: "flex",
         flexDirection: "column",
@@ -22705,7 +22730,8 @@
       }
     }, /* @__PURE__ */ import_react2.default.createElement(InputDrag, {
       value: 77,
-      onChange: handleChange
+      onChange: handleChange,
+      onInput: handleInput
     })), /* @__PURE__ */ import_react2.default.createElement("p", {
       style: { fontSize: "0.8rem", textAlign: "center", color: "#555" }
     }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1")));
