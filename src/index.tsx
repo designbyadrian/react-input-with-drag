@@ -158,7 +158,7 @@ export default function InputDrag({
   };
 
   useEffect(() => {
-    if (_value) {
+    if (typeof _value == 'number') {
       setValue(+_value);
     }
   }, [_value]);
