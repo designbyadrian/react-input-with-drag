@@ -78,6 +78,9 @@ export default function InputDrag({
   }, 200);
 
   const handleInput = (newValue: number) => {
+    requestAnimationFrame(() => {
+      onInput?.(newValue, inputRef.current);
+    });
     handleDragEnd(newValue);
   };
 
@@ -155,10 +158,6 @@ export default function InputDrag({
   const handleKeyUp = () => {
     setModifier('');
   };
-
-  useEffect(() => {
-    onInput?.(value, inputRef.current);
-  }, [value]);
 
   useEffect(() => {
     if (props.value !== value && typeof props.value === 'number')
