@@ -1,14 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Input from './index';
 
 function App() {
-  const handleChange = (value: number) => {
-    console.log('handleChange', value);
+  const [value, setValue] = React.useState(42);
+
+  const handleChange = (newValue: number) => {
+    console.log('handleChange', newValue);
+    setValue(newValue);
   };
 
-  const handleInput = (value: number) => {
-    console.log('handleInput', value);
+  const handleInput = (newValue: number) => {
+    console.log('handleInput', newValue);
+    setValue(newValue);
   };
 
   return (
@@ -28,7 +32,7 @@ function App() {
             borderRadius: '1em',
           }}
         >
-          <Input value={77} onChange={handleChange} onInput={handleInput} />
+          <Input value={value} onChange={handleChange} onInput={handleInput} />
         </div>
         <p style={{ fontSize: '0.8rem', textAlign: 'center', color: '#555' }}>
           Hold <em>Shift</em> for increments of 0.1
@@ -38,4 +42,7 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+
+const root = createRoot(container!);
+root.render(<App />);
