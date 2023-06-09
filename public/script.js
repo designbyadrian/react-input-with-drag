@@ -22650,6 +22650,9 @@
       onChange == null ? void 0 : onChange(newValue, inputRef.current);
     }, 200);
     const handleInput = (newValue) => {
+      requestAnimationFrame(() => {
+        onInput == null ? void 0 : onInput(newValue, inputRef.current);
+      });
       handleDragEnd(newValue);
     };
     const handleMove = (0, import_react.useCallback)((e) => {
@@ -22706,9 +22709,6 @@
     const handleKeyUp = () => {
       setModifier("");
     };
-    (0, import_react.useEffect)(() => {
-      onInput == null ? void 0 : onInput(value, inputRef.current);
-    }, [value]);
     (0, import_react.useEffect)(() => {
       if (props.value !== value && typeof props.value === "number")
         setValue(props.value);
