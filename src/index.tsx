@@ -161,6 +161,11 @@ export default function InputDrag({
   }, [value]);
 
   useEffect(() => {
+    if (props.value !== value && typeof props.value === 'number')
+      setValue(props.value);
+  }, [props.value]);
+
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
