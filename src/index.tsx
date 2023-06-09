@@ -22,10 +22,11 @@ export type InputWithDragChangeHandler = (
 interface InputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'onChange' | 'onInput'
+    'onChange' | 'onInput' | 'value'
   > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
+  value: number;
   modifiers?: InputDragModifiers;
   onChange?: InputWithDragChangeHandler;
   onInput?: InputWithDragChangeHandler;
@@ -40,14 +41,13 @@ interface InputProps
 export default function InputDrag({
   // mouseDragThreshold = 3,
   // tabletDragThreshold = 10,
-  value: _value,
   style: _style = {},
   modifiers: _modifiers = {},
   onChange,
   onInput,
   ...props
 }: InputProps) {
-  const [value, setValue] = useState<number | string>('');
+  const [value, setValue] = useState<number>(props.value || 0);
   const [modifier, setModifier] = useState<InputModifier | ''>('');
   const startValue = useRef(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -64,7 +64,7 @@ export default function InputDrag({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
-    setValue(newValue);
+    setValue(+newValue);
 
     if (isNaN(+newValue)) {
       return;
@@ -78,7 +78,6 @@ export default function InputDrag({
   }, 200);
 
   const handleInput = (newValue: number) => {
-    onInput?.(newValue, inputRef.current);
     handleDragEnd(newValue);
   };
 
@@ -158,10 +157,8 @@ export default function InputDrag({
   };
 
   useEffect(() => {
-    if (typeof _value == 'number') {
-      setValue(+_value);
-    }
-  }, [_value]);
+    onInput?.(value, inputRef.current);
+  }, [value]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
