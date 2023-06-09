@@ -1,6 +1,6 @@
 {
   "name": "react-input-with-drag",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Lightweight, zero-dependency, number input component with mouse drag actions just like in Blender and 3D Studio Max.",
   "keywords": [
     "react",
@@ -13,7 +13,7 @@
   "scripts": {
     "build": "npm run clean && node build.js && tsc --emitDeclarationOnly --outDir dist",
     "clean": "rimraf dist",
-    "dev": "node serve.js",
+    "start": "node serve.js",
     "prepublishOnly": "npm run build"
   },
   "main": "dist/index.cjs.js",
@@ -31,8 +31,8 @@
     "node": ">=12"
   },
   "peerDependencies": {
-    "react": ">=16",
-    "react-dom": ">=16"
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
