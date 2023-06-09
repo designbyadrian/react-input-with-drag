@@ -2,8 +2,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Input from './index';
 
+const v = 42;
+
 function App() {
-  const [value, setValue] = React.useState(42);
+  const [value, setValue] = React.useState(v);
 
   const handleChange = (newValue: number) => {
     console.log('handleChange', newValue);
@@ -13,6 +15,10 @@ function App() {
   const handleInput = (newValue: number) => {
     console.log('handleInput', newValue);
     setValue(newValue);
+  };
+
+  const resetValue = () => {
+    setValue(v);
   };
 
   return (
@@ -37,6 +43,11 @@ function App() {
         <p style={{ fontSize: '0.8rem', textAlign: 'center', color: '#555' }}>
           Hold <em>Shift</em> for increments of 0.1
         </p>
+        <div style={{ marginTop: '2em' }}>
+          <button type="button" onClick={resetValue}>
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );

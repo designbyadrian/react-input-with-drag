@@ -22710,6 +22710,10 @@
       onInput == null ? void 0 : onInput(value, inputRef.current);
     }, [value]);
     (0, import_react.useEffect)(() => {
+      if (props.value !== value && typeof props.value === "number")
+        setValue(props.value);
+    }, [props.value]);
+    (0, import_react.useEffect)(() => {
       document.addEventListener("keydown", handleKeyDown);
       document.addEventListener("keyup", handleKeyUp);
       return () => {
@@ -22731,8 +22735,9 @@
   }
 
   // src/demo.tsx
+  var v = 42;
   function App() {
-    const [value, setValue] = import_react2.default.useState(42);
+    const [value, setValue] = import_react2.default.useState(v);
     const handleChange = (newValue) => {
       console.log("handleChange", newValue);
       setValue(newValue);
@@ -22740,6 +22745,9 @@
     const handleInput = (newValue) => {
       console.log("handleInput", newValue);
       setValue(newValue);
+    };
+    const resetValue = () => {
+      setValue(v);
     };
     return /* @__PURE__ */ import_react2.default.createElement("div", {
       style: { fontFamily: "sans-serif" }
@@ -22763,7 +22771,12 @@
       onInput: handleInput
     })), /* @__PURE__ */ import_react2.default.createElement("p", {
       style: { fontSize: "0.8rem", textAlign: "center", color: "#555" }
-    }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1")));
+    }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1"), /* @__PURE__ */ import_react2.default.createElement("div", {
+      style: { marginTop: "2em" }
+    }, /* @__PURE__ */ import_react2.default.createElement("button", {
+      type: "button",
+      onClick: resetValue
+    }, "Reset"))));
   }
   var container = document.getElementById("root");
   var root = (0, import_client.createRoot)(container);
