@@ -36,8 +36,8 @@ Since react-input-with-drag overloads a regular HTML input, all the typical prop
 Additionally, these are props to customise react-input-with-drag:
 
 | prop      | default             | description                                                 |
-| :-------- | :------------------ | :---------------------------------------------------------- | --- |
-| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed |     |
+| :-------- | :------------------ | :---------------------------------------------------------- |
+| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed |     
 
 > **Note**
 >
