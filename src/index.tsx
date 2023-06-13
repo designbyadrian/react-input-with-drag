@@ -1,10 +1,11 @@
 import React, {
-  CSSProperties,
   useCallback,
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from 'react';
+import type { CSSProperties } from 'react';
 
 import { countDecimals, debounce } from './utils';
 
@@ -52,23 +53,26 @@ export default function InputDrag({
   const startValue = useRef(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const step = props.step ? +props.step : 1;
-  const modifiers: InputDragModifiers = {
-    shiftKey: 0.1,
-    ..._modifiers,
-  };
+  const modifiers: InputDragModifiers = useMemo(
+    () => ({
+      shiftKey: 0.1,
+      ..._modifiers,
+    }),
+    [_modifiers]
+  );
 
   const [, setStartPos] = useState<[number, number]>([0, 0]);
 
-  const style: CSSProperties = { cursor: 'ew-resize', ...{ _style } };
+  const style: CSSProperties = { cursor: 'ew-resize', ..._style };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
-    setValue(+newValue);
-
     if (isNaN(+newValue)) {
       return;
     }
+
+    setValue(+newValue);
 
     onChange?.(+newValue, inputRef.current);
   };
@@ -77,12 +81,15 @@ export default function InputDrag({
     onChange?.(newValue, inputRef.current);
   }, 200);
 
-  const handleInput = (newValue: number) => {
-    requestAnimationFrame(() => {
-      onInput?.(newValue, inputRef.current);
-    });
-    handleDragEnd(newValue);
-  };
+  const handleInput = useCallback(
+    (newValue: number) => {
+      requestAnimationFrame(() => {
+        onInput?.(newValue, inputRef.current);
+      });
+      handleDragEnd(newValue);
+    },
+    [handleDragEnd, onInput]
+  );
 
   const handleMove = useCallback(
     (e: MouseEvent) => {
@@ -118,7 +125,7 @@ export default function InputDrag({
         return pos;
       });
     },
-    [modifier, props.max, props.min, step]
+    [modifier, props.max, props.min, step, handleInput, modifiers]
   );
 
   const handleMoveEnd = useCallback(() => {
@@ -141,7 +148,7 @@ export default function InputDrag({
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('mouseup', handleMoveEnd);
     },
-    [handleMove, handleMoveEnd, value]
+    [handleMove, handleMoveEnd, value, props.min, props.defaultValue]
   );
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -162,6 +169,7 @@ export default function InputDrag({
   useEffect(() => {
     if (props.value !== value && typeof props.value === 'number')
       setValue(props.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.value]);
 
   useEffect(() => {
