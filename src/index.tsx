@@ -1,14 +1,15 @@
 import React, {
-  CSSProperties,
   useCallback,
   useEffect,
   useRef,
   useState,
-} from 'react';
+  useMemo,
+} from "react";
+import type { CSSProperties } from "react";
 
-import { countDecimals, debounce } from './utils';
+import { countDecimals, debounce } from "./utils";
 
-type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
+type InputModifier = "shiftKey" | "altKey" | "ctrlKey" | "metaKey";
 
 export type InputDragModifiers = {
   [key in InputModifier]?: number;
@@ -22,7 +23,7 @@ export type InputWithDragChangeHandler = (
 interface InputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'onChange' | 'onInput' | 'value'
+    "onChange" | "onInput" | "value"
   > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
@@ -48,27 +49,30 @@ export default function InputDrag({
   ...props
 }: InputProps) {
   const [value, setValue] = useState<number>(props.value || 0);
-  const [modifier, setModifier] = useState<InputModifier | ''>('');
+  const [modifier, setModifier] = useState<InputModifier | "">("");
   const startValue = useRef(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const step = props.step ? +props.step : 1;
-  const modifiers: InputDragModifiers = {
-    shiftKey: 0.1,
-    ..._modifiers,
-  };
+  const modifiers: InputDragModifiers = useMemo(
+    () => ({
+      shiftKey: 0.1,
+      ..._modifiers,
+    }),
+    [_modifiers]
+  );
 
   const [, setStartPos] = useState<[number, number]>([0, 0]);
 
-  const style: CSSProperties = { cursor: 'ew-resize', ...{ _style } };
+  const style: CSSProperties = { cursor: "ew-resize", ..._style };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
-    setValue(+newValue);
-
     if (isNaN(+newValue)) {
       return;
     }
+
+    setValue(+newValue);
 
     onChange?.(+newValue, inputRef.current);
   };
@@ -77,16 +81,19 @@ export default function InputDrag({
     onChange?.(newValue, inputRef.current);
   }, 200);
 
-  const handleInput = (newValue: number) => {
-    requestAnimationFrame(() => {
-      onInput?.(newValue, inputRef.current);
-    });
-    handleDragEnd(newValue);
-  };
+  const handleInput = useCallback(
+    (newValue: number) => {
+      requestAnimationFrame(() => {
+        onInput?.(newValue, inputRef.current);
+      });
+      handleDragEnd(newValue);
+    },
+    [handleDragEnd, onInput]
+  );
 
   const handleMove = useCallback(
     (e: MouseEvent) => {
-      setStartPos(pos => {
+      setStartPos((pos) => {
         const { clientX: x2, clientY: y2 } = e;
         const [x1, y1] = pos;
 
@@ -118,12 +125,12 @@ export default function InputDrag({
         return pos;
       });
     },
-    [modifier, props.max, props.min, step]
+    [modifier, props.max, props.min, step, handleInput, modifiers]
   );
 
   const handleMoveEnd = useCallback(() => {
-    document.removeEventListener('mousemove', handleMove);
-    document.removeEventListener('mouseup', handleMoveEnd);
+    document.removeEventListener("mousemove", handleMove);
+    document.removeEventListener("mouseup", handleMoveEnd);
   }, [handleMove]);
 
   const handleDown = useCallback(
@@ -138,41 +145,42 @@ export default function InputDrag({
 
       setStartPos([e.clientX, e.clientY]);
 
-      document.addEventListener('mousemove', handleMove);
-      document.addEventListener('mouseup', handleMoveEnd);
+      document.addEventListener("mousemove", handleMove);
+      document.addEventListener("mouseup", handleMoveEnd);
     },
-    [handleMove, handleMoveEnd, value]
+    [handleMove, handleMoveEnd, value, props.min, props.defaultValue]
   );
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.metaKey) {
-      setModifier('metaKey');
+      setModifier("metaKey");
     } else if (e.ctrlKey) {
-      setModifier('ctrlKey');
+      setModifier("ctrlKey");
     } else if (e.altKey) {
-      setModifier('altKey');
+      setModifier("altKey");
     } else if (e.shiftKey) {
-      setModifier('shiftKey');
+      setModifier("shiftKey");
     }
   };
   const handleKeyUp = () => {
-    setModifier('');
+    setModifier("");
   };
 
   useEffect(() => {
-    if (props.value !== value && typeof props.value === 'number')
+    if (props.value !== value && typeof props.value === "number")
       setValue(props.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.value]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseup', handleMoveEnd);
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseup", handleMoveEnd);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
