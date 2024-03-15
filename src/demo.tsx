@@ -5,16 +5,16 @@ import Input from './index';
 const v = 42;
 
 function App() {
-  const [value, setValue] = React.useState(v);
+  const [value, setValue] = React.useState<number | string>(v);
 
-  const handleChange = (e: any) => {
-    console.log('handleChange', e.target.value);
-    setValue(e.target.value);
-  };
-
-  const handleDragInput = (newNumber: number) => {
-    console.log('handleChange in Drag', newNumber);
-    setValue(newNumber);
+  const handleChange = (
+    newValue: React.ChangeEvent<HTMLInputElement> | number
+  ) => {
+    if (typeof newValue === 'number') {
+      setValue(newValue);
+    } else {
+      setValue(newValue.target.value);
+    }
   };
 
   const resetValue = () => {
@@ -46,11 +46,7 @@ function App() {
               borderRadius: '1em',
             }}
           >
-            <Input
-              value={value}
-              onChange={handleChange}
-              handleDragInput={handleDragInput}
-            />
+            <Input value={value} onChange={handleChange} />
           </div>
           <p style={{ fontSize: '0.8rem', textAlign: 'center', color: '#555' }}>
             Hold <em>Shift</em> for increments of 0.1

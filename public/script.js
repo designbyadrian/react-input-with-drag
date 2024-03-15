@@ -22947,13 +22947,11 @@
       style: _style = {},
       modifiers: _modifiers = {},
       onChange,
-      handleDragInput,
       value
     } = _b, props = __objRest(_b, [
       "style",
       "modifiers",
       "onChange",
-      "handleDragInput",
       "value"
     ]);
     const [inputValue, setInputValue] = (0, import_react.useState)(value);
@@ -22993,8 +22991,7 @@
           if (props.max)
             newValue = Math.min(newValue, +props.max);
           newValue = +newValue.toFixed(decimals);
-          setInputValue(newValue);
-          handleDragInput(newValue);
+          onChange(newValue);
           return pos;
         });
       },
@@ -23055,13 +23052,12 @@
   var v = 42;
   function App() {
     const [value, setValue] = import_react2.default.useState(v);
-    const handleChange = (e) => {
-      console.log("handleChange", e.target.value);
-      setValue(e.target.value);
-    };
-    const handleDragInput = (newNumber) => {
-      console.log("handleChange in Drag", newNumber);
-      setValue(newNumber);
+    const handleChange = (newValue) => {
+      if (typeof newValue === "number") {
+        setValue(newValue);
+      } else {
+        setValue(newValue.target.value);
+      }
     };
     const resetValue = () => {
       setValue(v);
@@ -23090,8 +23086,7 @@
       }
     }, /* @__PURE__ */ import_react2.default.createElement(InputDrag, {
       value,
-      onChange: handleChange,
-      handleDragInput
+      onChange: handleChange
     })), /* @__PURE__ */ import_react2.default.createElement("p", {
       style: { fontSize: "0.8rem", textAlign: "center", color: "#555" }
     }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1"), /* @__PURE__ */ import_react2.default.createElement("div", {

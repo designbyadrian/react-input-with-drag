@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import type { CSSProperties, ChangeEventHandler } from 'react';
 
-import { countDecimals, debounce } from './utils';
+import { countDecimals } from './utils';
 
 type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
 
@@ -27,11 +27,10 @@ interface InputProps
   > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
-  value: number;
+  value: number | string;
   modifiers?: InputDragModifiers;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   onInput?: ChangeEventHandler<HTMLInputElement>;
-  handleDragInput?: any;
 }
 
 /*  * Input with drag functionality
@@ -45,7 +44,6 @@ export default function InputDrag({
   style: _style = {},
   modifiers: _modifiers = {},
   onChange,
-  handleDragInput,
   value,
   ...props
 }: InputProps) {
@@ -98,9 +96,7 @@ export default function InputDrag({
 
         newValue = +newValue.toFixed(decimals);
 
-        setInputValue(newValue);
-
-        handleDragInput(newValue);
+        onChange(newValue);
 
         return pos;
       });
