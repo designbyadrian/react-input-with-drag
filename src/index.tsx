@@ -30,7 +30,6 @@ interface InputProps
   value: number | string;
   modifiers?: InputDragModifiers;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  onInput?: ChangeEventHandler<HTMLInputElement>;
 }
 
 /*  * Input with drag functionality
@@ -159,7 +158,6 @@ export default function InputDrag({
     <input
       {...props}
       type="number"
-      step="any"
       value={inputValue}
       style={style}
       onMouseDown={handleDown}

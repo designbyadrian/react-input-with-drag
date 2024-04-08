@@ -23040,7 +23040,6 @@
     }, []);
     return /* @__PURE__ */ import_react.default.createElement("input", __spreadProps(__spreadValues({}, props), {
       type: "number",
-      step: "any",
       value: inputValue,
       style,
       onMouseDown: handleDown,
