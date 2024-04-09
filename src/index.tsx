@@ -5,9 +5,9 @@ import React, {
   useState,
   useMemo,
 } from 'react';
-import type { CSSProperties, ChangeEventHandler } from 'react';
+import type { CSSProperties } from 'react';
 
-import { countDecimals } from './utils';
+import { countDecimals, debounce } from './utils';
 
 type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
 
@@ -27,29 +27,31 @@ interface InputProps
   > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
-  value: number | string;
+  value: number;
   modifiers?: InputDragModifiers;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: InputWithDragChangeHandler;
+  onInput?: InputWithDragChangeHandler;
 }
 
-/*  * Input with drag functionality
+/**
+ * Input with drag functionality
 
  * @prop {number} mouseDragThreshold - The number of pixels that a User Interface element has to be moved before it is recognized.
- * @prop {number} tabletDragThreshold - The drag threshold for tablet events. */
-
+ * @prop {number} tabletDragThreshold - The drag threshold for tablet events.
+ */
 export default function InputDrag({
   // mouseDragThreshold = 3,
   // tabletDragThreshold = 10,
   style: _style = {},
   modifiers: _modifiers = {},
   onChange,
-  value,
+  onInput,
   ...props
 }: InputProps) {
-  /*   const inputRef = useRef<HTMLInputElement | null>(null); */
-  const [inputValue, setInputValue] = useState(value);
+  const [value, setValue] = useState<number>(props.value || 0);
   const [modifier, setModifier] = useState<InputModifier | ''>('');
   const startValue = useRef(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const step = props.step ? +props.step : 1;
   const modifiers: InputDragModifiers = useMemo(
     () => ({
@@ -63,9 +65,31 @@ export default function InputDrag({
 
   const style: CSSProperties = { cursor: 'ew-resize', ..._style };
 
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    if (isNaN(+newValue)) {
+      return;
+    }
+
+    setValue(+newValue);
+
+    onChange?.(+newValue, inputRef.current);
+  };
+
+  const handleDragEnd = debounce((newValue: number) => {
+    onChange?.(newValue, inputRef.current);
+  }, 200);
+
+  const handleInput = useCallback(
+    (newValue: number) => {
+      requestAnimationFrame(() => {
+        onInput?.(newValue, inputRef.current);
+      });
+      handleDragEnd(newValue);
+    },
+    [handleDragEnd, onInput]
+  );
 
   const handleMove = useCallback(
     (e: MouseEvent) => {
@@ -95,12 +119,13 @@ export default function InputDrag({
 
         newValue = +newValue.toFixed(decimals);
 
-        onChange(newValue);
+        setValue(newValue);
+        handleInput(newValue);
 
         return pos;
       });
     },
-    [modifier, props.max, props.min, step, modifiers]
+    [modifier, props.max, props.min, step, handleInput, modifiers]
   );
 
   const handleMoveEnd = useCallback(() => {
@@ -142,6 +167,12 @@ export default function InputDrag({
   };
 
   useEffect(() => {
+    if (props.value !== value && typeof props.value === 'number')
+      setValue(props.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.value]);
+
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
@@ -156,12 +187,13 @@ export default function InputDrag({
 
   return (
     <input
-      {...props}
       type="number"
-      value={inputValue}
+      {...props}
+      value={value}
       style={style}
       onMouseDown={handleDown}
-      onChange={onChange}
+      onChange={handleChange}
+      ref={inputRef}
     />
   );
 }
