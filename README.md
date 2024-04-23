@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-npm install --save-dev react-input-with-drag
+npm install --save react-input-with-drag
 ```
 
 ## Usage
@@ -37,8 +37,12 @@ Additionally, these are props to customise react-input-with-drag:
 
 | prop      | default             | description                                                 |
 | :-------- | :------------------ | :---------------------------------------------------------- |
-| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed |     
+| modifiers | `{ shiftKey: 0.1 }` | Sets the precision of a drag when a modifier key is pressed |
 
 > **Note**
 >
 > A modifier takes the [step](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/step) property into account. If `step` is 0.1, the default shift key will add/subtract by 0.01
+
+## Read more
+
+- [NPM](https://www.npmjs.com/package/react-input-with-drag)
