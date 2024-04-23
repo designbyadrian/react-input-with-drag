@@ -22,19 +22,19 @@ function App() {
 
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
-      <h1 style={{ textAlign: 'center' }}>:supervillain: Input with drag</h1>
+      <h1 style={{ textAlign: 'center' }}>🦹 Input with drag</h1>
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            padding: '1rem',
+            border: '2px solid pink',
+            borderRadius: '1em',
           }}
         >
           <div
@@ -49,7 +49,15 @@ function App() {
           <p style={{ fontSize: '0.8rem', textAlign: 'center', color: '#555' }}>
             Hold <em>Shift</em> for increments of 0.1
           </p>
-          <div style={{ marginTop: '1em', marginBottom: '2rem' }}>
+          <div
+            style={{
+              marginTop: '1em',
+              marginBottom: '2rem ',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
             <button type="button" onClick={resetValue}>
               Reset
             </button>

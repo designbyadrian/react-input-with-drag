@@ -23071,13 +23071,13 @@
       style: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center"
+        alignItems: "center"
       }
     }, /* @__PURE__ */ import_react2.default.createElement("div", {
       style: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
+        padding: "1rem",
+        border: "2px solid pink",
+        borderRadius: "1em"
       }
     }, /* @__PURE__ */ import_react2.default.createElement("div", {
       style: {
@@ -23091,7 +23091,13 @@
     })), /* @__PURE__ */ import_react2.default.createElement("p", {
       style: { fontSize: "0.8rem", textAlign: "center", color: "#555" }
     }, "Hold ", /* @__PURE__ */ import_react2.default.createElement("em", null, "Shift"), " for increments of 0.1"), /* @__PURE__ */ import_react2.default.createElement("div", {
-      style: { marginTop: "1em", marginBottom: "2rem" }
+      style: {
+        marginTop: "1em",
+        marginBottom: "2rem ",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+      }
     }, /* @__PURE__ */ import_react2.default.createElement("button", {
       type: "button",
       onClick: resetValue

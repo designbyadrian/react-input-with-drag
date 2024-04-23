@@ -51,11 +51,9 @@ export default function InputDrag({
   );
   const [, setStartPos] = useState<[number, number]>([0, 0]);
   const style: CSSProperties = { cursor: 'ew-resize', ..._style };
-
   useEffect(() => {
     setInputValue(value);
   }, [value]);
-
   const handleMove = useCallback(
     (e: MouseEvent) => {
       setStartPos(pos => {
@@ -83,12 +81,10 @@ export default function InputDrag({
     },
     [modifier, props.max, props.min, step, modifiers]
   );
-
   const handleMoveEnd = useCallback(() => {
     document.removeEventListener('mousemove', handleMove);
     document.removeEventListener('mouseup', handleMoveEnd);
   }, [handleMove]);
-
   const handleDown = useCallback(
     (e: React.MouseEvent<HTMLInputElement>) => {
       let _startValue = +value;
@@ -102,7 +98,6 @@ export default function InputDrag({
     },
     [handleMove, handleMoveEnd, value, props.min, props.defaultValue]
   );
-
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.metaKey) {
       setModifier('metaKey');
@@ -114,11 +109,9 @@ export default function InputDrag({
       setModifier('shiftKey');
     }
   };
-
   const handleKeyUp = () => {
     setModifier('');
   };
-
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
