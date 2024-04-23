@@ -1,9 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Input from './index';
+
 const v = 42;
 function App() {
   const [value, setValue] = React.useState<number | string>(v);
+
   const handleChange = (
     newValue: React.ChangeEvent<HTMLInputElement> | number
   ) => {
@@ -13,9 +15,11 @@ function App() {
       setValue(newValue.target.value);
     }
   };
+
   const resetValue = () => {
     setValue(v);
   };
+
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
       <h1 style={{ textAlign: 'center' }}>:supervillain: Input with drag</h1>
