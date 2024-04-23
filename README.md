@@ -19,13 +19,7 @@ function App() {
     // fired on input change and drag end
   };
 
-  const handleInput: InputWithDragChangeHandler = value => {
-    // fired on every input change, including every pixel dragged
-  };
-
-  return (
-    <InputWithDrag value={100} onChange={handleChange} onInput={handleInput} />
-  );
+  return <InputWithDrag value={100} onChange={handleChange} />;
 }
 ```
 
