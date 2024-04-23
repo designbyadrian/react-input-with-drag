@@ -11,9 +11,7 @@ type InputModifier = 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey';
 export type InputDragModifiers = {
   [key in InputModifier]?: number;
 };
-export type InputWithDragChangeHandler = (
-  newValue: number | React.ChangeEvent<HTMLInputElement>
-) => void;
+export type InputWithDragChangeHandler = (newValue: number) => void;
 interface InputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -21,7 +19,7 @@ interface InputProps
   > {
   // mouseDragThreshold?: number;
   // tabletDragThreshold?: number;
-  value: number | string;
+  value: number;
   modifiers?: InputDragModifiers;
   onChange?: InputWithDragChangeHandler;
 }
@@ -37,8 +35,7 @@ export default function InputDrag({
   value,
   ...props
 }: InputProps) {
-  /*   const inputRef = useRef<HTMLInputElement | null>(null); */
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState<string>(String(value));
   const [modifier, setModifier] = useState<InputModifier | ''>('');
   const startValue = useRef(0);
   const step = props.step ? +props.step : 1;
@@ -52,8 +49,18 @@ export default function InputDrag({
   const [, setStartPos] = useState<[number, number]>([0, 0]);
   const style: CSSProperties = { cursor: 'ew-resize', ..._style };
   useEffect(() => {
-    setInputValue(value);
+    setInputValue(String(value));
   }, [value]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    if (value === '-') {
+      setInputValue(value);
+      return;
+    }
+
+    onChange?.(parseInt(value, 10));
+  };
   const handleMove = useCallback(
     (e: MouseEvent) => {
       setStartPos(pos => {
@@ -126,11 +133,13 @@ export default function InputDrag({
   return (
     <input
       {...props}
-      type="number"
+      type="text"
+      inputMode="numeric"
+      pattern="/^-?(0|[1-9]\d*)(\.\d+)?$/"
       value={inputValue}
       style={style}
       onMouseDown={handleDown}
-      onChange={onChange}
+      onChange={handleInputChange}
     />
   );
 }

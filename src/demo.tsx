@@ -1,23 +1,23 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Input from './index';
+import Input, { InputWithDragChangeHandler } from './index';
 
 const v = 42;
 function App() {
-  const [value, setValue] = React.useState<number | string>(v);
+  const [value, setValue] = React.useState<number>(v);
 
-  const handleChange = (
-    newValue: React.ChangeEvent<HTMLInputElement> | number
-  ) => {
-    if (typeof newValue === 'number') {
-      setValue(newValue);
-    } else {
-      setValue(newValue.target.value);
-    }
+  const handleChange: InputWithDragChangeHandler = newValue => {
+    setValue(newValue);
   };
 
   const resetValue = () => {
     setValue(v);
+  };
+
+  const handleInputWithoutDragChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = e => {
+    setValue(Number(e.target.value));
   };
 
   return (
@@ -78,7 +78,7 @@ function App() {
                 color: '#555',
               }}
             >
-              Input without drag
+              Input without drag (for reference)
             </p>
             <div
               style={{
@@ -87,7 +87,7 @@ function App() {
                 borderRadius: '1em',
               }}
             >
-              <input value={value} onChange={handleChange} />
+              <input value={value} onChange={handleInputWithoutDragChange} />
             </div>
           </div>
         </div>
