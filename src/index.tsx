@@ -14,7 +14,6 @@ export type InputDragModifiers = {
 export type InputWithDragChangeHandler = (
   newValue: number | React.ChangeEvent<HTMLInputElement>
 ) => void;
-
 interface InputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -52,7 +51,6 @@ export default function InputDrag({
   );
   const [, setStartPos] = useState<[number, number]>([0, 0]);
   const style: CSSProperties = { cursor: 'ew-resize', ..._style };
-
   useEffect(() => {
     setInputValue(value);
   }, [value]);
