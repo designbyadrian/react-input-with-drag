@@ -22991,7 +22991,9 @@
           if (props.max)
             newValue = Math.min(newValue, +props.max);
           newValue = +newValue.toFixed(decimals);
-          onChange(newValue);
+          if (newValue) {
+            onChange == null ? void 0 : onChange(newValue);
+          }
           return pos;
         });
       },
