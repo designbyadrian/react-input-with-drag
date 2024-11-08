@@ -1,3 +1,13 @@
+> ### ⚠️ **Notice: This Repository is No Longer Maintained**
+> 
+> This project has been **deprecated** and is no longer maintained.
+> 
+> It has been replaced by [**React Interactive Input**]([https://github.com/username/new-repo](https://github.com/designbyadrian/react-interactive-input)) 🎉.
+> 
+> Please switch to the new package for ongoing support, updates, and improvements.
+>
+> (No offence to fancy drag people! The new repo is not just a name change, but a complete rewrite. Still love you!)
+
 # 💄 React input with drag
 
 > Lightweight, zero-dependency, number input component with mouse drag actions just like in Blender and 3D Studio Max.
